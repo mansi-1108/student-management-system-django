@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/student.css' %}" />
+  <title>Student Management</title>
+</head>
+<body>
+
+<div class="top-bar">
+  <span class="user-role">
+    Logged in as:
+    <strong>
+      {% if perms.students.delete_student %}
+        Admin
+      {% elif perms.students.add_student %}
+        Teacher
+      {% else %}
+        Viewer
+      {% endif %}
+    </strong>
+  </span>
+
+  <div class="top-links">
+    {% if request.user.is_staff %}
+      <a href="{% url 'admin_dashboard' %}" class="dashboard-btn">📊 Dashboard</a>
+      <a href="{% url 'activity_logs' %}" class="dashboard-btn">🧾 Activity Logs</a>
+    {% endif %}
+
+    <form method="post" action="{% url 'logout' %}" class="logout-form">
+      {% csrf_token %}
+      <button type="submit" class="logout-btn">Logout</button>
+    </form>
+  </div>
+</div>
+
+{% if show_form %}
+<div class="form-section">
+  <div class="form-card">
+    <h2>{% if is_edit %}Edit Student{% else %}Add Student{% endif %}</h2>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="save-btn">
+        {% if is_edit %}Update{% else %}Save{% endif %}
+      </button>
+    </form>
+  </div>
+</div>
+{% endif %}
+
+<div class="container">
+  <h2>Student Management System</h2>
+
+  <div class="search-box">
+    <form method="get">
+      <input type="text" name="q" placeholder="Search student" value="{{request.GET.q}}" />
+    </form>
+    {% if perms.students.add_student %}
+    <a href="{% url 'student_add' %}" class="add-btn">+ Add Student</a>
+    {% endif %}
+  </div>
+  
+  <div class="export-container">
+  <a href="{% url 'export_students_csv' %}?q={{ request.GET.q }}" class="add-btn">
+    ⬇ Export CSV
+  </a>
+  <a href="{% url 'export_students_excel' %}?q={{ request.GET.q }}" class="add-btn">
+    ⬇ Export Excel
+  </a>
+</div>
+
+ <table>
+  <tr>
+    <th>Name</th>
+    <th>Roll</th>
+    <th>Subject</th>
+    <th>Marks</th>
+    <th>Grade</th>
+    <th>Action</th>
+  </tr>
+
+  {% if students %}
+    {% for s in students %}
+    <tr>
+      <td>{{ s.name }}</td>
+      <td>{{ s.roll_no }}</td>
+      <td>{{ s.subject }}</td>
+      <td>{{ s.marks }}</td>
+      <td>{{ s.grade }}</td>
+      <td>
+        <a href="{% url 'student_edit' s.id %}" class="edit-btn">Edit</a>
+        {% if perms.students.delete_student %}
+           <a href="{% url 'student_delete' s.id %}" class="delete-btn">Delete</a>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  {% else %}
+    <tr>
+      <td colspan="6" class="empty-row">
+        ❌ No record found
+      </td>
+    </tr>
+  {% endif %}
+</table>
+
+  <div class="pagination-wrapper">
+    <div class="pagination-container">
+      {% if page_obj.has_previous %}
+        <a class="page-btn" href="?page={{ page_obj.previous_page_number }}">&#8592;</a>
+      {% endif %}
+      <span class="page-info">
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+      </span>
+      {% if page_obj.has_next %}
+        <a class="page-btn" href="?page={{ page_obj.next_page_number }}">&#8594;</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

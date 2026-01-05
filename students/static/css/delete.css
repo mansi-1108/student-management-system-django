@@ -1,0 +1,47 @@
+.delete-body { 
+    background: linear-gradient(135deg, #f8d7da, #fdfdfd);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+}
+.delete-container { 
+    width: 420px;
+    background: white;
+    padding: 35px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+}
+.delete-container h2 {
+    color: #dc3545; 
+    margin-bottom: 15px;
+}
+.delete-container p { 
+    font-size: 16px; 
+    margin-bottom: 25px;
+    color: #333; 
+}
+.btn-delete {
+    background: #dc3545; 
+    color: white; 
+    padding: 10px 20px; 
+    border: none; 
+    border-radius: 6px;
+    font-size: 15px; 
+    cursor: pointer;
+}
+.btn-delete:hover {
+    background: #b02a37; 
+}
+.btn-cancel {
+    margin-left: 10px;
+    text-decoration: none; 
+    padding: 10px 20px; 
+    border-radius: 6px; 
+    background: #6c757d;
+    color: white; 
+}
+.btn-cancel:hover {
+    background: #565e64;
+}

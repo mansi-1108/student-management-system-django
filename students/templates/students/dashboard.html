@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    {% load static %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+</head>
+<body>
+
+<div class="nav">
+    <a href="{% url 'student_list' %}">👨‍🎓 Students</a>
+    <a href="{% url 'activity_logs' %}">📝 Activity Logs</a>
+</div>
+
+<h1>📊 Admin Dashboard</h1>
+
+<div class="cards">
+    <div class="card">
+        <h2>Total Students</h2>
+        <h1>{{ total_students }}</h1>
+    </div>
+
+    <div class="card">
+        <h2>Average Marks</h2>
+        <h1>{{ avg_marks|floatformat:2 }}</h1>
+    </div>
+</div>
+
+<div class="cards">
+    <div class="card">
+        <h2>Pass %</h2>
+        <h1>{{ pass_percent }}%</h1>
+    </div>
+
+    <div class="card">
+        <h2>Fail %</h2>
+        <h1>{{ fail_percent }}%</h1>
+    </div>
+</div>
+
+<h2>🏆 Top 5 Students</h2>
+
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Subject</th>
+        <th>Marks</th>
+    </tr>
+
+    {% for s in top_students %}
+    <tr>
+        <td>{{ s.name }}</td>
+        <td>{{ s.subject.name }}</td>
+        <td>{{ s.marks }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h2>⚠️ At-Risk Students (Marks &lt; 40)</h2>
+
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Subject</th>
+        <th>Marks</th>
+    </tr>
+
+    {% for s in at_risk_students %}
+    <tr class="risk-stu">
+        <td>{{ s.name }}</td>
+        <td>{{ s.subject.name }}</td>
+        <td>{{ s.marks }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="3">No at-risk students 🎉</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<div id="dashboard-data"
+     data-aplus="{{ grade_distribution.A_plus }}"
+     data-a="{{ grade_distribution.A }}"
+     data-b="{{ grade_distribution.B }}"
+     data-c="{{ grade_distribution.C }}"
+     data-pass="{{ pass_percent }}"
+     data-fail="{{ fail_percent }}"
+     data-subjects='[
+        {% for s in students_per_subject %}
+            {"name": "{{ s.name }}", "count": {{ s.count }} }{% if not forloop.last %},{% endif %}
+        {% endfor %}
+     ]'
+     data-subject-avg='[
+        {% for s in subject_avg %}
+            {"name": "{{ s.name }}", "avg": {{ s.avg_marks|default:0 }} }{% if not forloop.last %},{% endif %}
+        {% endfor %}
+     ]'>
+</div>
+
+<canvas id="gradeChart"></canvas>
+<canvas id="subjectChart"></canvas>
+<canvas id="subjectAvgChart"></canvas>
+<canvas id="passFailChart"></canvas>
+
+<script src="{% static 'js/dashboard.js' %}"></script>
+
+</body>
+</html>

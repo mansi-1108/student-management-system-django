@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+<h2>📊 Activity Logs</h2>
+<table border="1" cellpadding="8">
+    <tr>
+        <th>User</th>
+        <th>Action</th>
+        <th>Description</th>
+        <th>Time</th>
+        <th>IP Address </th>
+        <th> User Agent </th>
+    </tr>
+
+    {% for log in logs %}
+    <tr>
+        <td>{{ log.user.username }}</td>
+        <td>{{ log.action }}</td>
+        <td>{{log.description}}</td>
+        <td>{{ log.timestamp|date:"d M Y, h:i A" }}</td>
+        <td>{{ log.ip_address }}</td>
+        <td style="max-width:300px; word-wrap:break-word;">
+            {{ log.user_agent }}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+</body>
+</html>
